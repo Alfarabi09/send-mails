@@ -68,16 +68,28 @@ func PostDelay(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	text := r.FormValue("text")
+	if text == "" {
+		http.Error(w, http.StatusText(400), 400)
+		return
+	}
 	// Sending email.
-	MoscowTime, _ := time.LoadLocation("Europe/Moscow")
+	MoscowTime, err := time.LoadLocation("Asia/Almaty")
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 	scheduler := cron.New(cron.WithLocation(MoscowTime))
 
 	// stop scheduler
 	defer scheduler.Stop()
 
 	// set task, message will be sent in 2 minutes
-	scheduler.AddFunc("*/2 * * * *", NotifyNewOrder)
-
+	EntryID, err := scheduler.AddFunc(text, NotifyNewOrder)
+	if err != nil || EntryID == 0 {
+		http.Error(w, http.StatusText(400), 400)
+		return
+	}
 	// start scheduler
 	go scheduler.Start()
 
@@ -85,7 +97,6 @@ func PostDelay(w http.ResponseWriter, r *http.Request) {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig
-
 	if err := tmpl.Execute(w, ""); err != nil {
 		http.Error(w, http.StatusText(500), 500)
 	}
