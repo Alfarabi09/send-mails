@@ -16,15 +16,13 @@ type Receiver struct {
 
 func SendAll() error {
 	// Sender data.
-	from := "zhaikapan@gmail.com"
-	password := "ndmjfsukuhirwjsg"
+	from := "example@gmail.com"
+	password := "password"
 
 	// Receiver email address.
 	to := []Receiver{
-		{"Alfarabi", "Maken", []string{"s60180073@gse.cs.msu.ru"}, "14.05.2001"},
-		//{"John", "Kash", []string{"fara2001@mail.ru"}, "12.05.1999"},
-		//{"Sayan", "Kinzhitayev", []string{"s60180063@gse.cs.msu.ru"}, "19.04.2001"},
-		//{"Madi", "Albek", []string{"albek.madi13@gmail.com"}, "13.05.2000"},
+		{"Name", "Surname", []string{"example@gmail.com"}, "14.05.2001"},
+		{"John", "Kash", []string{"john2001@mail.ru"}, "12.05.1999"},
 	}
 
 	// smtp server configuration.

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"text/template"
 	"time"
@@ -73,6 +74,8 @@ func PostDelay(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(400), 400)
 		return
 	}
+
+	text = cron_format(text)
 	// Sending email.
 	MoscowTime, err := time.LoadLocation("Asia/Almaty")
 	if err != nil {
@@ -109,4 +112,16 @@ func NotifyNewOrder() {
 		log.Fatal(err1)
 	}
 	fmt.Printf(time.Now().Format("2006-01-02 15:04:05") + "NotifyNewOrder")
+}
+
+func cron_format(s string) string {
+	if len(s) > 5 {
+		return "err"
+	}
+	split := strings.Split(s, ":")
+	if len(split) != 2 {
+		return "err"
+	}
+	text := split[1] + " " + split[0] + " * * *"
+	return text
 }
